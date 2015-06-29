@@ -3,6 +3,7 @@ package com.spanbee.persistence;
 import java.io.Serializable;
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -16,7 +17,6 @@ public class Customer implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
 	private int id;
 
 	@Column(name="birth_date")
@@ -25,9 +25,6 @@ public class Customer implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="created_at")
 	private Date createdAt;
-
-	@Column(name="created_by")
-	private String createdBy;
 
 	@Column(name="customer_status")
 	private byte customerStatus;
@@ -43,26 +40,26 @@ public class Customer implements Serializable {
 	@Column(name="last_name")
 	private String lastName;
 
+	@Column(name="marital_status")
+	private byte maritalStatus;
+
 	private String mobile;
 
 	private String password;
 
-	@Column(name="pin_code")
-	private String pinCode;
-
-	private String place;
-
 	@Column(name="session_id")
 	private String sessionId;
 
-	private String state;
+	@Column(name="unique_id")
+	private String uniqueId;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="updated_at")
 	private Date updatedAt;
 
-	@Column(name="updated_by")
-	private String updatedBy;
+	//bi-directional many-to-one association to CustomerAddress
+	@OneToMany(mappedBy="customer")
+	private List<CustomerAddress> customerAddresses;
 
 	public Customer() {
 	}
@@ -89,14 +86,6 @@ public class Customer implements Serializable {
 
 	public void setCreatedAt(Date createdAt) {
 		this.createdAt = createdAt;
-	}
-
-	public String getCreatedBy() {
-		return this.createdBy;
-	}
-
-	public void setCreatedBy(String createdBy) {
-		this.createdBy = createdBy;
 	}
 
 	public byte getCustomerStatus() {
@@ -139,6 +128,14 @@ public class Customer implements Serializable {
 		this.lastName = lastName;
 	}
 
+	public byte getMaritalStatus() {
+		return this.maritalStatus;
+	}
+
+	public void setMaritalStatus(byte maritalStatus) {
+		this.maritalStatus = maritalStatus;
+	}
+
 	public String getMobile() {
 		return this.mobile;
 	}
@@ -155,22 +152,6 @@ public class Customer implements Serializable {
 		this.password = password;
 	}
 
-	public String getPinCode() {
-		return this.pinCode;
-	}
-
-	public void setPinCode(String pinCode) {
-		this.pinCode = pinCode;
-	}
-
-	public String getPlace() {
-		return this.place;
-	}
-
-	public void setPlace(String place) {
-		this.place = place;
-	}
-
 	public String getSessionId() {
 		return this.sessionId;
 	}
@@ -179,12 +160,12 @@ public class Customer implements Serializable {
 		this.sessionId = sessionId;
 	}
 
-	public String getState() {
-		return this.state;
+	public String getUniqueId() {
+		return this.uniqueId;
 	}
 
-	public void setState(String state) {
-		this.state = state;
+	public void setUniqueId(String uniqueId) {
+		this.uniqueId = uniqueId;
 	}
 
 	public Date getUpdatedAt() {
@@ -195,12 +176,26 @@ public class Customer implements Serializable {
 		this.updatedAt = updatedAt;
 	}
 
-	public String getUpdatedBy() {
-		return this.updatedBy;
+	public List<CustomerAddress> getCustomerAddresses() {
+		return this.customerAddresses;
 	}
 
-	public void setUpdatedBy(String updatedBy) {
-		this.updatedBy = updatedBy;
+	public void setCustomerAddresses(List<CustomerAddress> customerAddresses) {
+		this.customerAddresses = customerAddresses;
+	}
+
+	public CustomerAddress addCustomerAddress(CustomerAddress customerAddress) {
+		getCustomerAddresses().add(customerAddress);
+		customerAddress.setCustomer(this);
+
+		return customerAddress;
+	}
+
+	public CustomerAddress removeCustomerAddress(CustomerAddress customerAddress) {
+		getCustomerAddresses().remove(customerAddress);
+		customerAddress.setCustomer(null);
+
+		return customerAddress;
 	}
 
 }
